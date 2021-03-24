@@ -1,7 +1,14 @@
 import { React, useState } from "react";
-import { TextField, Grid, Button, Typography } from "@material-ui/core";
+import {
+  TextField,
+  Grid,
+  Button,
+  Typography,
+  FormControl,
+} from "@material-ui/core";
 import axios from "axios";
 import styles from "./styles";
+import loading from "../../images/loading.gif";
 
 const getBase64 = (file) => {
   return new Promise((resolve) => {
@@ -24,38 +31,61 @@ const getBase64 = (file) => {
   });
 };
 function Form({ posts, setPosts }) {
+  const [isLoading, setIsLoading] = useState(false);
   const postData = (data) => {
-    console.log(data);
+    setIsLoading(true);
     axios
       .post("http://localhost:8000/posts/create", data)
       .then((response) => {
         console.log(response);
         if (response.status === 201) {
           setPosts([...posts, response.data]);
+          setIsLoading(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
   };
   const classes = styles();
   const [selectedFile, setSelectedFile] = useState(undefined),
     [title, setTitle] = useState(""),
     [name, setName] = useState(""),
+    [emptyTitle, setEmptyTitle] = useState(false),
+    [emptyMessage, setEmptyMessage] = useState(false),
+    [emptyName, setEmptyName] = useState(false),
     [message, setMessage] = useState("");
   const handleFormSubmit = (e) => {
+    let send = true;
     e.preventDefault();
-    postData({
-      title: title,
-      creator: name,
-      message: message,
-      selectedFile: selectedFile,
-    });
+    if (title === "") {
+      setEmptyTitle(true);
+      send = false;
+    }
+    if (message === "") {
+      setEmptyMessage(true);
+      send = false;
+    }
+    if (name === "") {
+      setEmptyName(true);
+      send = false;
+    }
+    if (send) {
+      postData({
+        title: title,
+        creator: name,
+        message: message,
+        selectedFile: selectedFile,
+      });
+    }
   };
   return (
     <Grid container direction="column">
       <Typography variant="h4" align="center">
         NEW POST
       </Typography>
-      <form noValidate autoComplete="off">
+      <FormControl autoComplete="off">
         <Grid
           container
           direction="column"
@@ -67,26 +97,41 @@ function Form({ posts, setPosts }) {
               label="Name"
               variant="outlined"
               value={name}
+              required
+              error={emptyName}
               className={classes.field}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setEmptyName(false);
+              }}
             />
           </Grid>
           <Grid item>
             <TextField
               label="Title"
               variant="outlined"
+              required
+              error={emptyTitle}
               className={classes.field}
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setEmptyTitle(false);
+              }}
             />
           </Grid>
           <Grid item>
             <TextField
               label="Message"
               variant="outlined"
+              required
+              error={emptyMessage}
               className={classes.field}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                setEmptyMessage(false);
+              }}
             />
           </Grid>
         </Grid>
@@ -103,42 +148,62 @@ function Form({ posts, setPosts }) {
             );
           }}
         />
-        <Grid item container alignItems="center">
-          <Grid item>
+
+        <Grid item container spacing={1} justify="center" alignItems="center">
+          <Grid item xs={selectedFile !== undefined ? 10 : 12}>
             <label htmlFor="contained-button-file">
-              <Button variant="contained" color="primary" component="span">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                component="span"
+              >
                 Upload Picture
               </Button>
             </label>
           </Grid>
-
           {selectedFile !== undefined && (
-            <Grid item style={{ width: "35px", height: "35px" }}>
+            <Grid item container justify="center" alignItems="center" xs={2}>
               <img
                 src={selectedFile}
                 alt="preview"
+                onClick={() => {
+                  setSelectedFile(undefined);
+                }}
                 style={{
                   width: "100%",
                   height: "100%",
                   borderRadius: "5px",
-                  marginLeft: "5px",
+                  cursor: "pointer",
                 }}
               />
             </Grid>
           )}
         </Grid>
+
         <Grid item>
           <Button
             variant="contained"
             color="secondary"
             component="span"
             type="submit"
+            fullWidth
+            style={{ marginTop: "0.7em" }}
             onClick={(e) => handleFormSubmit(e)}
           >
             Post
           </Button>
         </Grid>
-      </form>
+        {isLoading && (
+          <Grid item container alignItems="center" justify="center">
+            <img
+              src={loading}
+              alt="loading"
+              style={{ height: "7em", width: "7em" }}
+            />
+          </Grid>
+        )}
+      </FormControl>
     </Grid>
   );
 }

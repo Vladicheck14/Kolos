@@ -19,7 +19,7 @@ export default function Post({ post, posts, setPosts }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [expanded, setExpanded] = useState(false);
-  const needExpand = post.message.length > 50;
+  const needExpand = post.message.length > 46;
   useEffect(() => {
     if (
       localStorage.getItem(post._id) !== null &&
@@ -106,7 +106,7 @@ export default function Post({ post, posts, setPosts }) {
           style={{ wordWrap: "break-word" }}
         >
           {!expanded &&
-            (needExpand ? `${post.message.substring(0, 47)}...` : post.message)}
+            (needExpand ? `${post.message.substring(0, 43)}...` : post.message)}
           {expanded && post.message}
         </Typography>
       </CardContent>
@@ -125,6 +125,7 @@ export default function Post({ post, posts, setPosts }) {
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
             })}
+            disableRipple
             onClick={handleExpandClick}
             aria-expanded={expanded}
             aria-label="show more"
@@ -132,7 +133,11 @@ export default function Post({ post, posts, setPosts }) {
             <ExpandMoreIcon />
           </IconButton>
         )}
-        <IconButton aria-label="delete" onClick={deletePost}>
+        <IconButton
+          aria-label="delete"
+          onClick={deletePost}
+          style={{ marginLeft: needExpand ? "0" : "auto" }}
+        >
           <DeleteIcon />
         </IconButton>
       </CardActions>
