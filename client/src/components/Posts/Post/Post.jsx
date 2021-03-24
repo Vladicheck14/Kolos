@@ -14,11 +14,14 @@ import styles from "./style";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import axios from "axios";
 import clsx from "clsx";
+import loadingPic from "../../../images/loading.gif";
+import { motion } from "framer-motion";
 
 export default function Post({ post, posts, setPosts }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [expanded, setExpanded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const needExpand = post.message.length > 46;
   useEffect(() => {
     if (
@@ -41,10 +44,12 @@ export default function Post({ post, posts, setPosts }) {
   };
   const date = new Date(post.createdAt);
   const deletePost = () => {
+    setLoading(true);
     axios
       .post("http://localhost:8000/posts/delete", { id: post._id })
       .then((response) => {
         if (response.status === 200) {
+          setLoading(false);
           setPosts(posts.filter((item) => item._id !== post._id));
         }
       })
@@ -60,7 +65,6 @@ export default function Post({ post, posts, setPosts }) {
         .post("http://localhost:8000/posts/like", { id: post._id, like: "add" })
         .then((response) => {
           if (response.status === 200) {
-            console.log(response);
             setLikesCount(response.data.likes);
           }
         })
@@ -83,7 +87,7 @@ export default function Post({ post, posts, setPosts }) {
     setIsLiked(!isLiked);
   };
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} component={motion.div}>
       <CardHeader
         title={post.title}
         subheader={date.toLocaleDateString("en-US", dateOptions)}
@@ -111,7 +115,17 @@ export default function Post({ post, posts, setPosts }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="like" onClick={likeHandler}>
+        <IconButton
+          aria-label="like"
+          onClick={likeHandler}
+          disableRipple
+          component={motion.div}
+          whileHover={{
+            scale: 1.2,
+            transition: { duration: 0.3 },
+          }}
+          style={{ backgroundColor: "transparent" }}
+        >
           <Badge
             classes={{ badge: classes.customBadge }}
             className={classes.margin}
@@ -120,12 +134,13 @@ export default function Post({ post, posts, setPosts }) {
             <FavoriteIcon color={isLiked ? "secondary" : "inherit"} />
           </Badge>
         </IconButton>
-        {needExpand && (
+        {needExpand && !loading && (
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
             })}
             disableRipple
+            style={{ backgroundColor: "transparent" }}
             onClick={handleExpandClick}
             aria-expanded={expanded}
             aria-label="show more"
@@ -133,13 +148,30 @@ export default function Post({ post, posts, setPosts }) {
             <ExpandMoreIcon />
           </IconButton>
         )}
-        <IconButton
-          aria-label="delete"
-          onClick={deletePost}
-          style={{ marginLeft: needExpand ? "0" : "auto" }}
-        >
-          <DeleteIcon />
-        </IconButton>
+        {!loading && (
+          <IconButton
+            aria-label="delete"
+            onClick={deletePost}
+            component={motion.div}
+            whileHover={{
+              scale: 1.2,
+              transition: { duration: 0.3 },
+            }}
+            style={{
+              marginLeft: needExpand ? "0" : "auto",
+              backgroundColor: "transparent",
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
+        {loading && (
+          <img
+            src={loadingPic}
+            alt="loading"
+            style={{ height: "5em", width: "5em", marginLeft: "auto" }}
+          />
+        )}
       </CardActions>
     </Card>
   );

@@ -25,7 +25,6 @@ function App() {
     axios
       .get("http://localhost:8000/posts/")
       .then((response) => {
-        console.log(response);
         setIsLoading(false);
         setPosts(response.data);
       })
