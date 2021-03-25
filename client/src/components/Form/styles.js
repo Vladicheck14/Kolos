@@ -5,6 +5,6 @@ export default makeStyles((theme) => ({
     width: "100%",
   },
   fields: {
-    height: "14em",
+    height: "10em",
   },
 }));

@@ -5,11 +5,12 @@ import {
   deletePost,
   likePost,
 } from "../controllers/posts.js";
+import verifyToken from "../middleware/verifyToken.js";
 const router = express.Router();
 
-router.get("/", getPosts);
-router.post("/create", createPost);
-router.post("/delete", deletePost);
-router.post("/like", likePost);
+router.get("/", verifyToken, getPosts);
+router.post("/create", verifyToken, createPost);
+router.post("/delete", verifyToken, deletePost);
+router.post("/like", verifyToken, likePost);
 
 export default router;

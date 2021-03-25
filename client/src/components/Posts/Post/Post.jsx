@@ -93,7 +93,7 @@ export default function Post({ post, posts, setPosts }) {
         subheader={date.toLocaleDateString("en-US", dateOptions)}
         avatar={
           <Avatar aria-label="avatar" className={classes.avatar}>
-            {post.creator.charAt(0).toUpperCase()}
+            {post.creatorName.charAt(0).toUpperCase()}
           </Avatar>
         }
       />

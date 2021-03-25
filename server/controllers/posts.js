@@ -3,7 +3,6 @@ import PostMessage from "../models/postMessage.js";
 export const getPosts = async (req, res) => {
   try {
     const messages = await PostMessage.find();
-    console.log("request from client");
     res.status(200).json(messages);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -22,10 +21,18 @@ export const createPost = async (req, res) => {
 };
 export const deletePost = async (req, res) => {
   const id = req.body.id;
-  await PostMessage.findByIdAndRemove(id);
-
   try {
-    res.status(200).json({ message: "deleted" });
+    const post = await PostMessage.findById(id);
+    if (post) {
+      if (post.creator === req.user) {
+        await PostMessage.findByIdAndRemove(id);
+        res.status(200).json({ message: "deleted" });
+      } else {
+        res.status(409).json({ message: "you can't delete other's posts" });
+      }
+    } else {
+      res.status(409).json({ message: "cant find post" });
+    }
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

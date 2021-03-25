@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import {
   TextField,
   Grid,
@@ -9,37 +9,38 @@ import {
 import axios from "axios";
 import styles from "./styles";
 import loading from "../../images/loading.gif";
+import { GlobalContext } from "../../ContextProvider";
 
 const getBase64 = (file) => {
   return new Promise((resolve) => {
     let baseURL = "";
-    // Make new FileReader
     let reader = new FileReader();
-
-    // Convert the file to base64 text
     reader.readAsDataURL(file);
-
-    // on reader load somthing...
     reader.onload = () => {
-      // Make a fileInfo Object
-      // console.log("Called", reader);
       baseURL = reader.result;
-      // console.log(baseURL);
       resolve(baseURL);
     };
-    // console.log(fileInfo);
   });
 };
-function Form({ posts, setPosts }) {
+function Form() {
   const [isLoading, setIsLoading] = useState(false);
+  const { posts, authToken, firstName } = useContext(GlobalContext);
+  const [postsValue, setPostsValue] = posts;
+  const [firstNameValue, setFirstNameValue] = firstName;
+  const [authTokenValue, setAuthTokenValue] = authToken;
   const postData = (data) => {
     setIsLoading(true);
+    console.log(data);
     axios
-      .post("http://localhost:8000/posts/create", data)
+      .post("http://localhost:8000/posts/create", data, {
+        headers: {
+          authToken: authTokenValue,
+        },
+      })
       .then((response) => {
         console.log(response);
         if (response.status === 201) {
-          setPosts([...posts, response.data]);
+          setPostsValue([...postsValue, response.data]);
           setIsLoading(false);
         }
       })
@@ -51,10 +52,8 @@ function Form({ posts, setPosts }) {
   const classes = styles();
   const [selectedFile, setSelectedFile] = useState(undefined),
     [title, setTitle] = useState(""),
-    [name, setName] = useState(""),
     [emptyTitle, setEmptyTitle] = useState(false),
     [emptyMessage, setEmptyMessage] = useState(false),
-    [emptyName, setEmptyName] = useState(false),
     [message, setMessage] = useState("");
   const handleFormSubmit = (e) => {
     let send = true;
@@ -67,16 +66,13 @@ function Form({ posts, setPosts }) {
       setEmptyMessage(true);
       send = false;
     }
-    if (name === "") {
-      setEmptyName(true);
-      send = false;
-    }
     if (send) {
       postData({
         title: title,
-        creator: name,
+        creator: authTokenValue,
         message: message,
         selectedFile: selectedFile,
+        creatorName: firstNameValue,
       });
     }
   };
@@ -92,20 +88,6 @@ function Form({ posts, setPosts }) {
           justify="space-evenly"
           className={classes.fields}
         >
-          <Grid item>
-            <TextField
-              label="Name"
-              variant="outlined"
-              value={name}
-              required
-              error={emptyName}
-              className={classes.field}
-              onChange={(e) => {
-                setName(e.target.value);
-                setEmptyName(false);
-              }}
-            />
-          </Grid>
           <Grid item>
             <TextField
               label="Title"

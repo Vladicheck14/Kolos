@@ -4,10 +4,13 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import postRoutes from "./routes/post.js";
+import authRoutes from "./routes/auth.js";
 dotenv.config();
 
 const app = express();
-
+const corsOptions = {
+  exposedHeaders: "auth-token",
+};
 app.use(
   express.json({
     extended: true,
@@ -21,8 +24,9 @@ app.use(
   })
 );
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use("/posts", postRoutes);
+app.use("/api", authRoutes);
 const CONNECTION_URL = process.env.DB_CONNECT;
 const PORT = 8000;
 
