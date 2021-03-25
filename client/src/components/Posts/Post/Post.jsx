@@ -22,7 +22,7 @@ export default function Post({ post, posts, setPosts }) {
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const needExpand = post.message.length > 46;
+  const needExpand = post.message.length > 35;
   useEffect(() => {
     if (
       localStorage.getItem(post._id) !== null &&
@@ -110,7 +110,7 @@ export default function Post({ post, posts, setPosts }) {
           style={{ wordWrap: "break-word" }}
         >
           {!expanded &&
-            (needExpand ? `${post.message.substring(0, 43)}...` : post.message)}
+            (needExpand ? `${post.message.substring(0, 32)}...` : post.message)}
           {expanded && post.message}
         </Typography>
       </CardContent>

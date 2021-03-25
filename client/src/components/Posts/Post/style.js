@@ -4,7 +4,10 @@ import { red } from "@material-ui/core/colors";
 export default makeStyles((theme) => ({
   root: {
     width: "21em",
-    minHeight: "27em",
+    minHeight: "28em",
+    justifyContent: "space-between",
+    display: "flex",
+    flexDirection: "column",
   },
   media: {
     height: "13em",
