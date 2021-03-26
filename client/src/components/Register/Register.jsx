@@ -44,8 +44,8 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    isLoggedIn && history.push("/");
-  }, [isLoggedIn, history]);
+    isLoggedInValue && history.push("/");
+  }, [isLoggedInValue, history]);
 
   const registerHandler = async (e) => {
     setLoading(true);

@@ -80,8 +80,8 @@ export default function Login() {
       });
   };
   useEffect(() => {
-    isLoggedIn && history.push("/");
-  }, [isLoggedIn, history]);
+    isLoggedInValue && history.push("/");
+  }, [isLoggedInValue, history]);
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />

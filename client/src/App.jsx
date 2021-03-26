@@ -20,6 +20,13 @@ export default function App() {
           <Route path="/Register" exact>
             <Register />
           </Route>
+          <Route
+            exact
+            path=""
+            render={() => {
+              window.location.href = "404.html";
+            }}
+          />
         </Switch>
       </Router>
     </GlobalProvider>
