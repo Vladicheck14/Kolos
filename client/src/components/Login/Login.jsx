@@ -1,16 +1,17 @@
 import { React, useState, useContext } from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+} from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
 import { useStyles } from "./styles";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { GlobalContext } from "../../ContextProvider";
 
@@ -18,10 +19,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="http://localhost/">
-        Memories
-      </Link>{" "}
-      {new Date().getFullYear()}
+      Memories {new Date().getFullYear()}
       {"."}
     </Typography>
   );
@@ -33,7 +31,6 @@ export default function Login() {
   const history = useHistory();
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
-  const [noUser, setNoUser] = useState(false);
   const [badEmail, setBadEmail] = useState(false);
   const [badPassword, setBadPassword] = useState(false);
   const { authToken, isLoggedIn } = useContext(GlobalContext);
@@ -107,6 +104,7 @@ export default function Login() {
               onChange={(e) => setLogin(e.target.value)}
               onFocus={() => {
                 setBadEmail(false);
+                setErrorMessage("");
               }}
               autoComplete="email"
               autoFocus
@@ -125,6 +123,7 @@ export default function Login() {
               error={badPassword}
               onFocus={() => {
                 setBadPassword(false);
+                setErrorMessage("");
               }}
               autoComplete="current-password"
             />
@@ -156,9 +155,9 @@ export default function Login() {
                 </Link>
               </Grid> */}
               <Grid item>
-                <RouterLink to="/Register" variant="body2">
+                <Link to="/Register" variant="body2">
                   {"Don't have an account? Sign Up"}
-                </RouterLink>
+                </Link>
               </Grid>
             </Grid>
             <Box mt={5}>
