@@ -20,7 +20,7 @@ import { GlobalContext } from "../../../ContextProvider";
 
 export default function Post({ post, posts, setPosts }) {
   const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(post.likesCount);
+  const [likesCount, setLikesCount] = useState(post.likedUsers.length);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const needExpand = post.message.length > 35;
@@ -28,13 +28,10 @@ export default function Post({ post, posts, setPosts }) {
   const [authTokenValue, setAuthTokenValue] = authToken;
   const [userIdValue, setUserIdValue] = userId;
   useEffect(() => {
-    if (
-      localStorage.getItem(post._id) !== null &&
-      localStorage.getItem(post._id) !== undefined
-    ) {
+    if (post.likedUsers.includes(userIdValue)) {
       setIsLiked(true);
     }
-  }, [post._id]);
+  }, [post.likedUsers, userIdValue, likesCount]);
 
   const classes = styles();
   const dateOptions = {
@@ -72,9 +69,16 @@ export default function Post({ post, posts, setPosts }) {
   };
   const likeHandler = () => {
     if (!isLiked) {
-      localStorage.setItem(post._id, "like");
       axios
-        .post("http://localhost:8000/posts/like", { id: post._id, like: "add" })
+        .post(
+          "http://localhost:8000/posts/like",
+          { id: post._id, like: "add" },
+          {
+            headers: {
+              authToken: authTokenValue,
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             setLikesCount(response.data.likes);
@@ -82,12 +86,16 @@ export default function Post({ post, posts, setPosts }) {
         })
         .catch((error) => console.log(error));
     } else {
-      localStorage.removeItem(post._id);
       axios
-        .post("http://localhost:8000/posts/like", {
-          id: post._id,
-          like: "remove",
-        })
+        .post(
+          "http://localhost:8000/posts/like",
+          { id: post._id, like: "remove" },
+          {
+            headers: {
+              authToken: authTokenValue,
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             console.log(response);

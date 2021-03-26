@@ -168,6 +168,7 @@ function Form() {
             component="span"
             type="submit"
             fullWidth
+            disabled={isLoading}
             style={{ marginTop: "0.7em" }}
             onClick={(e) => handleFormSubmit(e)}
           >

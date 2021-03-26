@@ -10,9 +10,9 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  likesCount: {
-    type: Number,
-    default: 0,
+  likedUsers: {
+    type: Array,
+    default: [],
   },
 });
 

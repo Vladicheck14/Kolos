@@ -4,8 +4,8 @@ import User from "../models/user.js";
 
 export const getPosts = async (req, res) => {
   try {
-    const messages = await PostMessage.find();
-    res.status(200).json(messages);
+    const posts = await PostMessage.find();
+    res.status(200).json(posts);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -53,9 +53,14 @@ export const likePost = async (req, res) => {
   if (action === "add") {
     try {
       PostMessage.findById(id, (err, post) => {
-        post.likesCount++;
+        if (post.likedUsers.includes(req.user._id)) {
+          return res
+            .status(409)
+            .json({ message: "you already liked this post" });
+        }
+        post.likedUsers.push(req.user._id);
         post.save((err, updatedpost) => {
-          res.status(200).json({ likes: updatedpost.likesCount });
+          res.status(200).json({ likes: updatedpost.likedUsers.length });
         });
       });
     } catch (error) {
@@ -64,9 +69,17 @@ export const likePost = async (req, res) => {
   } else if (action === "remove") {
     try {
       PostMessage.findById(id, (err, post) => {
-        post.likesCount--;
+        if (!post.likedUsers.includes(req.user._id)) {
+          return res
+            .status(409)
+            .json({ message: "you did not liked this post" });
+        }
+        const newLikedUsers = post.likedUsers.filter(
+          (user) => user !== req.user._id
+        );
+        post.likedUsers = newLikedUsers;
         post.save((err, updatedpost) => {
-          res.status(200).json({ likes: updatedpost.likesCount });
+          res.status(200).json({ likes: updatedpost.likedUsers.length });
         });
       });
     } catch (error) {
