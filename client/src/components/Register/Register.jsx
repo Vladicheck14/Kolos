@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -42,6 +42,10 @@ export default function Register() {
   const [badPassword, setBadPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    isLoggedIn && history.push("/");
+  }, [isLoggedIn, history]);
 
   const registerHandler = async (e) => {
     setLoading(true);

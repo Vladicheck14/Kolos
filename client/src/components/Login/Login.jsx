@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -6,6 +6,7 @@ import {
   TextField,
   Paper,
   Box,
+  Slide,
   Grid,
   Typography,
 } from "@material-ui/core";
@@ -78,94 +79,102 @@ export default function Login() {
         setErrorMessage(data.errorMessage);
       });
   };
+  useEffect(() => {
+    isLoggedIn && history.push("/");
+  }, [isLoggedIn, history]);
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              error={badEmail}
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-              onFocus={() => {
-                setBadEmail(false);
-                setErrorMessage("");
-              }}
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              type="password"
-              id="password"
-              error={badPassword}
-              onFocus={() => {
-                setBadPassword(false);
-                setErrorMessage("");
-              }}
-              autoComplete="current-password"
-            />
-            {errorMessage !== "" && (
-              <Typography
-                variant={"body1"}
-                align="center"
-                color="error"
-                style={{ marginTop: "24px" }}
+      <Slide direction="right" in timeout="800">
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      </Slide>
+
+      <Slide direction="left" in timeout="1000">
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                error={badEmail}
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                onFocus={() => {
+                  setBadEmail(false);
+                  setErrorMessage("");
+                }}
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                type="password"
+                id="password"
+                error={badPassword}
+                onFocus={() => {
+                  setBadPassword(false);
+                  setErrorMessage("");
+                }}
+                autoComplete="current-password"
+              />
+              {errorMessage !== "" && (
+                <Typography
+                  variant={"body1"}
+                  align="center"
+                  color="error"
+                  style={{ marginTop: "24px" }}
+                >
+                  {errorMessage}
+                </Typography>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                className={classes.submit}
+                onClick={(e) => loginHangler(e)}
               >
-                {errorMessage}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              className={classes.submit}
-              onClick={(e) => loginHangler(e)}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              {/* <Grid item xs>
+                Sign In
+              </Button>
+              <Grid container>
+                {/* <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid> */}
-              <Grid item>
-                <Link to="/Register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <Grid item>
+                  <Link to="/Register" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
-          </form>
-        </div>
-      </Grid>
+              <Box mt={5}>
+                <Copyright />
+              </Box>
+            </form>
+          </div>
+        </Grid>
+      </Slide>
     </Grid>
   );
 }
