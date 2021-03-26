@@ -1,4 +1,6 @@
 import PostMessage from "../models/postMessage.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -11,7 +13,12 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const post = req.body;
-  const newPost = new PostMessage(post);
+  const postCreator = await User.findById(req.user._id);
+  const newPost = new PostMessage({
+    ...post,
+    creator: postCreator._id,
+    creatorName: postCreator.firstName,
+  });
   try {
     await newPost.save();
     res.status(201).json(newPost);
@@ -19,19 +26,21 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+const getUserIdFromToken = (token) => jwt.verify(token, process.env.SECRET)._id;
+
 export const deletePost = async (req, res) => {
   const id = req.body.id;
   try {
     const post = await PostMessage.findById(id);
     if (post) {
-      if (post.creator === req.user) {
+      if (post.creator === req.user._id) {
         await PostMessage.findByIdAndRemove(id);
         res.status(200).json({ message: "deleted" });
       } else {
         res.status(409).json({ message: "you can't delete other's posts" });
       }
     } else {
-      res.status(409).json({ message: "cant find post" });
+      res.status(409).json({ message: "can't find post" });
     }
   } catch (error) {
     res.status(409).json({ message: error.message });

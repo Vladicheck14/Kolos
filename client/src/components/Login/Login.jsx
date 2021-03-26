@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState, useContext } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -10,7 +10,9 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { useStyles } from "./styles";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import axios from "axios";
+import { GlobalContext } from "../../ContextProvider";
 
 function Copyright() {
   return (
@@ -27,6 +29,58 @@ function Copyright() {
 
 export default function Login() {
   const classes = useStyles();
+  const [login, setLogin] = useState("");
+  const history = useHistory();
+  const [pass, setPass] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [noUser, setNoUser] = useState(false);
+  const [badEmail, setBadEmail] = useState(false);
+  const [badPassword, setBadPassword] = useState(false);
+  const { authToken, isLoggedIn } = useContext(GlobalContext);
+  const [authTokenValue, setAuthTokenValue] = authToken;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
+  const loginHangler = (e) => {
+    setLoading(true);
+    e.preventDefault();
+    axios
+      .post("http://localhost:8000/api/login", {
+        email: login,
+        password: pass,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setIsLoggedInValue(true);
+          const token = response.headers["auth-token"];
+          setAuthTokenValue(token);
+          localStorage.setItem("authToken", token);
+          history.push("/");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        const data = error.response.data;
+        switch (data.errorStatus) {
+          case "SHORTPASSWORD":
+          case "LONGPASSWORD":
+          case "EMPTYPASSWORD":
+            setBadPassword(true);
+            setPass("");
+            break;
+          case "SHORTEMAIL":
+          case "LONGEMAIL":
+          case "BADEMAIL":
+          case "USERNOTEXIST":
+          case "EMPTYEMAIL":
+            setBadEmail(true);
+            setLogin("");
+            break;
+          default:
+            break;
+        }
+        setErrorMessage(data.errorMessage);
+      });
+  };
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -48,6 +102,12 @@ export default function Login() {
               id="email"
               label="Email Address"
               name="email"
+              error={badEmail}
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              onFocus={() => {
+                setBadEmail(false);
+              }}
               autoComplete="email"
               autoFocus
             />
@@ -58,16 +118,34 @@ export default function Login() {
               fullWidth
               name="password"
               label="Password"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
               type="password"
               id="password"
+              error={badPassword}
+              onFocus={() => {
+                setBadPassword(false);
+              }}
               autoComplete="current-password"
             />
+            {errorMessage !== "" && (
+              <Typography
+                variant={"body1"}
+                align="center"
+                color="error"
+                style={{ marginTop: "24px" }}
+              >
+                {errorMessage}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
+              disabled={loading}
               className={classes.submit}
+              onClick={(e) => loginHangler(e)}
             >
               Sign In
             </Button>

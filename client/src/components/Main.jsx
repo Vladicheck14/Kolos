@@ -21,10 +21,22 @@ import { Redirect } from "react-router-dom";
 function App() {
   const classes = useStyles();
 
-  const { posts, authToken, isLoggedIn } = useContext(GlobalContext);
+  const {
+    posts,
+    authToken,
+    isLoggedIn,
+    firstName,
+    lastName,
+    email,
+    userId,
+  } = useContext(GlobalContext);
   const [postsValue, setPostsValue] = posts;
   const [authTokenValue, setAuthTokenValue] = authToken;
   const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
+  const [firstNameValue, setFirstNameValue] = firstName;
+  const [lastNameValue, setLastNameValue] = lastName;
+  const [emailvalue, setEmailValue] = email;
+  const [userIdValue, setUserIdValue] = userId;
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -45,10 +57,41 @@ function App() {
         })
         .catch((error) => console.log(error));
     };
+    const getUser = () => {
+      axios
+        .get("http://localhost:8000/api/getInfo", {
+          headers: {
+            authToken: authTokenValue,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            const userData = response.data;
+            setFirstNameValue(userData.firstName);
+            setLastNameValue(userData.lastName);
+            setEmailValue(userData.email);
+            setUserIdValue(userData.userId);
+          }
+        })
+        .catch((error) => {
+          localStorage.removeItem("authToken");
+          setAuthTokenValue("");
+          setIsLoggedInValue(false);
+        });
+    };
     if (isLoggedInValue) {
       getPosts();
+      getUser();
     }
-  }, [isLoggedInValue, authTokenValue, setPostsValue]);
+  }, [
+    isLoggedInValue,
+    authTokenValue,
+    setPostsValue,
+    setLastNameValue,
+    setUserIdValue,
+    setEmailValue,
+    setFirstNameValue,
+  ]);
   const matchesXs = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <ThemeProvider theme={theme}>

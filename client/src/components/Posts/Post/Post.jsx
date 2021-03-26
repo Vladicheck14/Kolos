@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -16,6 +16,7 @@ import axios from "axios";
 import clsx from "clsx";
 import loadingPic from "../../../images/loading.gif";
 import { motion } from "framer-motion";
+import { GlobalContext } from "../../../ContextProvider";
 
 export default function Post({ post, posts, setPosts }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -23,6 +24,9 @@ export default function Post({ post, posts, setPosts }) {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const needExpand = post.message.length > 35;
+  const { authToken, userId } = useContext(GlobalContext);
+  const [authTokenValue, setAuthTokenValue] = authToken;
+  const [userIdValue, setUserIdValue] = userId;
   useEffect(() => {
     if (
       localStorage.getItem(post._id) !== null &&
@@ -46,7 +50,15 @@ export default function Post({ post, posts, setPosts }) {
   const deletePost = () => {
     setLoading(true);
     axios
-      .post("http://localhost:8000/posts/delete", { id: post._id })
+      .post(
+        "http://localhost:8000/posts/delete",
+        { id: post._id },
+        {
+          headers: {
+            authToken: authTokenValue,
+          },
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           setLoading(false);
@@ -148,7 +160,7 @@ export default function Post({ post, posts, setPosts }) {
             <ExpandMoreIcon />
           </IconButton>
         )}
-        {!loading && (
+        {!loading && post.creator === userIdValue && (
           <IconButton
             aria-label="delete"
             onClick={deletePost}

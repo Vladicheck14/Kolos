@@ -33,15 +33,21 @@ export default function Register() {
     [formLastName, setFormLastName] = useState(""),
     [formEmail, setFormEmail] = useState(""),
     [formPassword, setFormPassword] = useState("");
-  const { firstName, lastName, email, authToken, isLoggedIn } = useContext(
-    GlobalContext
-  );
-  const [firstNameValue, setFirstNameValue] = firstName;
+  const { authToken, isLoggedIn } = useContext(GlobalContext);
+
   const [authTokenValue, setAuthTokenValue] = authToken;
   const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
-  const [lastNameValue, setLastNameValue] = lastName;
-  const [emailValue, setEmailValue] = email;
+
+  const [badFirstName, setBadFirstName] = useState(false);
+  const [badLastName, setBadLastName] = useState(false);
+  const [badEmail, setBadEmail] = useState(false);
+  const [badPassword, setBadPassword] = useState(false);
+  const [userExists, setUserExists] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const registerHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const ip = await axios.get("https://ipinfo.io/json?token=da153d332a0738");
     axios
@@ -54,19 +60,49 @@ export default function Register() {
       })
       .then((response) => {
         if (response.status === 200) {
+          setLoading(false);
           setIsLoggedInValue(true);
           const token = response.headers["auth-token"];
           setAuthTokenValue(token);
-          const data = response.data;
-          console.log(data);
-          setFirstNameValue(data.firstName);
-          setLastNameValue(data.lastName);
-          setEmailValue(data.email);
           localStorage.setItem("authToken", token);
           history.push("/");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setLoading(false);
+        const data = error.response.data;
+        switch (data.errorStatus) {
+          case "SHORTPASSWORD":
+          case "LONGPASSWORD":
+          case "EMPTYPASSWORD":
+            setBadPassword(true);
+            setFormPassword("");
+            break;
+          case "SHORTEMAIL":
+          case "LONGEMAIL":
+          case "BADEMAIL":
+          case "USEREXISTS":
+          case "EMPTYEMAIL":
+            setBadEmail(true);
+            setFormEmail("");
+            break;
+          case "SHORTFIRSTNAME":
+          case "LONGFIRSTNAME":
+          case "EMPTYFIRSTNAME":
+            setBadFirstName(true);
+            setFormFirstName("");
+            break;
+          case "SHORTLASTNAME":
+          case "LONGLASTNAME":
+          case "EMPTYLASTNAME":
+            setBadLastName(true);
+            setFormLastName("");
+            break;
+          default:
+            break;
+        }
+        setErrorMessage(data.errorMessage);
+      });
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -86,6 +122,11 @@ export default function Register() {
                 name="firstName"
                 variant="outlined"
                 required
+                error={badFirstName}
+                onFocus={() => {
+                  setBadFirstName(false);
+                  setErrorMessage("");
+                }}
                 fullWidth
                 onChange={(e) => {
                   setFormFirstName(e.target.value);
@@ -103,6 +144,11 @@ export default function Register() {
                 fullWidth
                 id="lastName"
                 label="Last Name"
+                error={badLastName}
+                onFocus={() => {
+                  setBadLastName(false);
+                  setErrorMessage("");
+                }}
                 name="lastName"
                 onChange={(e) => {
                   setFormLastName(e.target.value);
@@ -119,8 +165,13 @@ export default function Register() {
                 id="email"
                 label="Email Address"
                 name="email"
+                error={badEmail}
                 onChange={(e) => {
                   setFormEmail(e.target.value);
+                }}
+                onFocus={() => {
+                  setBadEmail(false);
+                  setErrorMessage("");
                 }}
                 value={formEmail}
                 autoComplete="email"
@@ -135,14 +186,29 @@ export default function Register() {
                 label="Password"
                 type="password"
                 id="password"
+                error={badPassword}
                 onChange={(e) => {
                   setFormPassword(e.target.value);
+                }}
+                onFocus={() => {
+                  setBadPassword(false);
+                  setErrorMessage("");
                 }}
                 value={formPassword}
                 autoComplete="current-password"
               />
             </Grid>
           </Grid>
+          {errorMessage !== "" && (
+            <Typography
+              variant={"body1"}
+              align="center"
+              color="error"
+              style={{ marginTop: "24px" }}
+            >
+              {errorMessage}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth
@@ -150,6 +216,7 @@ export default function Register() {
             color="primary"
             onClick={(e) => registerHandler(e)}
             className={classes.submit}
+            disabled={loading}
           >
             Sign Up
           </Button>

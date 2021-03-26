@@ -69,10 +69,8 @@ function Form() {
     if (send) {
       postData({
         title: title,
-        creator: authTokenValue,
         message: message,
         selectedFile: selectedFile,
-        creatorName: firstNameValue,
       });
     }
   };

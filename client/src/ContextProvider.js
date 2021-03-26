@@ -7,6 +7,7 @@ export const GlobalProvider = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
   const [isLoggedIn, setIsLoggedIn] = useState(
     authToken !== null && authToken !== undefined && authToken !== ""
@@ -21,6 +22,7 @@ export const GlobalProvider = (props) => {
         email: [email, setEmail],
         authToken: [authToken, setAuthToken],
         isLoggedIn: [isLoggedIn, setIsLoggedIn],
+        userId: [userId, setUserId],
       }}
     >
       {props.children}
