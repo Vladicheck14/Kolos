@@ -82,6 +82,14 @@ function App() {
     if (isLoggedInValue) {
       getPosts();
       getUser();
+    } else {
+      setEmailValue("");
+      setAuthTokenValue("");
+      setFirstNameValue("");
+      setLastNameValue("");
+      setPostsValue([]);
+      setUserIdValue("");
+      localStorage.removeItem("authToken");
     }
   }, [
     isLoggedInValue,
@@ -91,6 +99,8 @@ function App() {
     setUserIdValue,
     setEmailValue,
     setFirstNameValue,
+    setAuthTokenValue,
+    setIsLoggedInValue,
   ]);
   const matchesXs = useMediaQuery(theme.breakpoints.down("sm"));
   return (

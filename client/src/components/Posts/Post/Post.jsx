@@ -31,7 +31,7 @@ export default function Post({ post, posts, setPosts }) {
     if (post.likedUsers.includes(userIdValue)) {
       setIsLiked(true);
     }
-  }, [post.likedUsers, userIdValue, likesCount]);
+  }, [post.likedUsers, userIdValue]);
 
   const classes = styles();
   const dateOptions = {
