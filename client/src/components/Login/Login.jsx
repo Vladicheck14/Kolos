@@ -35,7 +35,7 @@ export default function Login() {
   const [badEmail, setBadEmail] = useState(false);
   const [badPassword, setBadPassword] = useState(false);
   const { authToken, isLoggedIn } = useContext(GlobalContext);
-  const [authTokenValue, setAuthTokenValue] = authToken;
+  const [, setAuthTokenValue] = authToken;
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
   const loginHangler = (e) => {
@@ -62,6 +62,7 @@ export default function Login() {
           case "SHORTPASSWORD":
           case "LONGPASSWORD":
           case "EMPTYPASSWORD":
+          case "BADPASSWORD":
             setBadPassword(true);
             setPass("");
             break;
@@ -85,11 +86,11 @@ export default function Login() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Slide direction="right" in timeout="800">
+      <Slide direction="right" in>
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
       </Slide>
 
-      <Slide direction="left" in timeout="1000">
+      <Slide direction="left" in>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -164,11 +165,13 @@ export default function Login() {
               </Grid> */}
                 <Grid item>
                   <Link to="/Register" variant="body2">
+                    {" "}
                     {"Don't have an account? Sign Up"}
                   </Link>
-                </Grid>
+                </Grid>{" "}
               </Grid>
               <Box mt={5}>
+                {" "}
                 <Copyright />
               </Box>
             </form>

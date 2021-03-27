@@ -5,11 +5,12 @@ import {
   Grow,
   Grid,
   AppBar,
+  Button,
   ThemeProvider,
   useMediaQuery,
 } from "@material-ui/core";
 import memories from "../images/memories.png";
-import useStyles from "../styles";
+import useStyles from "./styles";
 import Form from "./Form";
 import axios from "axios";
 import Posts from "./Posts";
@@ -30,13 +31,13 @@ function App() {
     email,
     userId,
   } = useContext(GlobalContext);
-  const [postsValue, setPostsValue] = posts;
+  const [, setPostsValue] = posts;
   const [authTokenValue, setAuthTokenValue] = authToken;
   const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
-  const [firstNameValue, setFirstNameValue] = firstName;
-  const [lastNameValue, setLastNameValue] = lastName;
-  const [emailvalue, setEmailValue] = email;
-  const [userIdValue, setUserIdValue] = userId;
+  const [, setFirstNameValue] = firstName;
+  const [, setLastNameValue] = lastName;
+  const [, setEmailValue] = email;
+  const [, setUserIdValue] = userId;
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -117,6 +118,17 @@ function App() {
               height="40"
               className={classes.image}
             />
+            <Button
+              className={classes.logout}
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                localStorage.removeItem("authToken");
+                window.location.reload();
+              }}
+            >
+              Log out
+            </Button>
           </AppBar>
           <Grow in>
             <Container>

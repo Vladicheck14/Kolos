@@ -25,8 +25,8 @@ export default function Post({ post, posts, setPosts }) {
   const [loading, setLoading] = useState(false);
   const needExpand = post.message.length > 35;
   const { authToken, userId } = useContext(GlobalContext);
-  const [authTokenValue, setAuthTokenValue] = authToken;
-  const [userIdValue, setUserIdValue] = userId;
+  const [authTokenValue] = authToken;
+  const [userIdValue] = userId;
   useEffect(() => {
     if (post.likedUsers.includes(userIdValue)) {
       setIsLiked(true);

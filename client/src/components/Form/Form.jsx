@@ -5,6 +5,7 @@ import {
   Button,
   Typography,
   FormControl,
+  Divider,
 } from "@material-ui/core";
 import axios from "axios";
 import styles from "./styles";
@@ -24,10 +25,11 @@ const getBase64 = (file) => {
 };
 function Form() {
   const [isLoading, setIsLoading] = useState(false);
-  const { posts, authToken, firstName } = useContext(GlobalContext);
+  const { posts, authToken, firstName, lastName } = useContext(GlobalContext);
   const [postsValue, setPostsValue] = posts;
-  const [firstNameValue, setFirstNameValue] = firstName;
-  const [authTokenValue, setAuthTokenValue] = authToken;
+  const [firstNameValue] = firstName;
+  const [lastNameValue] = lastName;
+  const [authTokenValue] = authToken;
   const postData = (data) => {
     setIsLoading(true);
     console.log(data);
@@ -76,115 +78,131 @@ function Form() {
   };
   return (
     <Grid container direction="column">
-      <Typography variant="h4" align="center">
-        NEW POST
-      </Typography>
-      <FormControl autoComplete="off">
+      {firstNameValue !== "" && lastNameValue !== "" && (
         <Grid
+          item
           container
           direction="column"
-          justify="space-evenly"
-          className={classes.fields}
+          alignItems="center"
+          justify="center"
         >
-          <Grid item>
-            <TextField
-              label="Title"
-              variant="outlined"
-              required
-              error={emptyTitle}
-              className={classes.field}
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                setEmptyTitle(false);
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <TextField
-              label="Message"
-              variant="outlined"
-              required
-              error={emptyMessage}
-              className={classes.field}
-              value={message}
-              onChange={(e) => {
-                setMessage(e.target.value);
-                setEmptyMessage(false);
-              }}
-            />
-          </Grid>
+          <Typography variant="h4" align="center">
+            Hello, {firstNameValue} {lastNameValue}
+          </Typography>
+          <Divider style={{ margin: "1em 0" }} />
         </Grid>
-        <input
-          style={{ display: "none" }}
-          id="contained-button-file"
-          type="file"
-          onChange={(e) => {
-            e.preventDefault();
-            setSelectedFile(
-              getBase64(e.target.files[0]).then((resolve) =>
-                setSelectedFile(resolve)
-              )
-            );
-          }}
-        />
-
-        <Grid item container spacing={1} justify="center" alignItems="center">
-          <Grid item xs={selectedFile !== undefined ? 10 : 12}>
-            <label htmlFor="contained-button-file">
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                component="span"
-              >
-                Upload Picture
-              </Button>
-            </label>
-          </Grid>
-          {selectedFile !== undefined && (
-            <Grid item container justify="center" alignItems="center" xs={2}>
-              <img
-                src={selectedFile}
-                alt="preview"
-                onClick={() => {
-                  setSelectedFile(undefined);
-                }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "5px",
-                  cursor: "pointer",
+      )}
+      <Grid item container direction="column">
+        <Typography variant="h4" align="center">
+          NEW POST
+        </Typography>
+        <FormControl autoComplete="off">
+          <Grid
+            container
+            direction="column"
+            justify="space-evenly"
+            className={classes.fields}
+          >
+            <Grid item>
+              <TextField
+                label="Title"
+                variant="outlined"
+                required
+                error={emptyTitle}
+                className={classes.field}
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  setEmptyTitle(false);
                 }}
               />
             </Grid>
-          )}
-        </Grid>
-
-        <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            component="span"
-            type="submit"
-            fullWidth
-            disabled={isLoading}
-            style={{ marginTop: "0.7em" }}
-            onClick={(e) => handleFormSubmit(e)}
-          >
-            Post
-          </Button>
-        </Grid>
-        {isLoading && (
-          <Grid item container alignItems="center" justify="center">
-            <img
-              src={loading}
-              alt="loading"
-              style={{ height: "7em", width: "7em" }}
-            />
+            <Grid item>
+              <TextField
+                label="Message"
+                variant="outlined"
+                required
+                error={emptyMessage}
+                className={classes.field}
+                value={message}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  setEmptyMessage(false);
+                }}
+              />
+            </Grid>
           </Grid>
-        )}
-      </FormControl>
+          <input
+            style={{ display: "none" }}
+            id="contained-button-file"
+            type="file"
+            onChange={(e) => {
+              e.preventDefault();
+              setSelectedFile(
+                getBase64(e.target.files[0]).then((resolve) =>
+                  setSelectedFile(resolve)
+                )
+              );
+            }}
+          />
+
+          <Grid item container spacing={1} justify="center" alignItems="center">
+            <Grid item xs={selectedFile !== undefined ? 10 : 12}>
+              <label htmlFor="contained-button-file">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  component="span"
+                >
+                  Upload Picture
+                </Button>
+              </label>
+            </Grid>
+            {selectedFile !== undefined && (
+              <Grid item container justify="center" alignItems="center" xs={2}>
+                <img
+                  src={selectedFile}
+                  alt="preview"
+                  onClick={() => {
+                    setSelectedFile(undefined);
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                />
+              </Grid>
+            )}
+          </Grid>
+
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              component="span"
+              type="submit"
+              fullWidth
+              disabled={isLoading}
+              style={{ marginTop: "0.7em" }}
+              onClick={(e) => handleFormSubmit(e)}
+            >
+              Post
+            </Button>
+          </Grid>
+          {isLoading && (
+            <Grid item container alignItems="center" justify="center">
+              <img
+                src={loading}
+                alt="loading"
+                style={{ height: "7em", width: "7em" }}
+              />
+            </Grid>
+          )}
+        </FormControl>
+      </Grid>
     </Grid>
   );
 }

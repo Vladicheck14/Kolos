@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
   Typography,
+  Grow,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useStyles } from "./styles";
@@ -33,7 +34,7 @@ export default function Register() {
     [formPassword, setFormPassword] = useState("");
   const { authToken, isLoggedIn } = useContext(GlobalContext);
 
-  const [authTokenValue, setAuthTokenValue] = authToken;
+  const [, setAuthTokenValue] = authToken;
   const [isLoggedInValue, setIsLoggedInValue] = isLoggedIn;
 
   const [badFirstName, setBadFirstName] = useState(false);
@@ -106,136 +107,140 @@ export default function Register() {
       });
   };
   return (
-    <>
-      <div component="main" className={classes.bg} />
-      <Container maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <form className={classes.form} noValidate>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="fname"
-                  name="firstName"
-                  variant="outlined"
-                  required
-                  error={badFirstName}
-                  onFocus={() => {
-                    setBadFirstName(false);
-                    setErrorMessage("");
-                  }}
-                  fullWidth
-                  onChange={(e) => {
-                    setFormFirstName(e.target.value);
-                  }}
-                  value={formFirstName}
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
+    <div component="main" className={classes.bg}>
+      <Grow in>
+        <Container maxWidth="xs">
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign up
+            </Typography>
+
+            <form className={classes.form} noValidate>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="fname"
+                    name="firstName"
+                    variant="outlined"
+                    required
+                    error={badFirstName}
+                    onFocus={() => {
+                      setBadFirstName(false);
+                      setErrorMessage("");
+                    }}
+                    fullWidth
+                    onChange={(e) => {
+                      setFormFirstName(e.target.value);
+                    }}
+                    value={formFirstName}
+                    id="firstName"
+                    label="First Name"
+                    autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    error={badLastName}
+                    onFocus={() => {
+                      setBadLastName(false);
+                      setErrorMessage("");
+                    }}
+                    name="lastName"
+                    onChange={(e) => {
+                      setFormLastName(e.target.value);
+                    }}
+                    value={formLastName}
+                    autoComplete="lname"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    error={badEmail}
+                    onChange={(e) => {
+                      setFormEmail(e.target.value);
+                    }}
+                    onFocus={() => {
+                      setBadEmail(false);
+                      setErrorMessage("");
+                    }}
+                    value={formEmail}
+                    autoComplete="email"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    error={badPassword}
+                    onChange={(e) => {
+                      setFormPassword(e.target.value);
+                    }}
+                    onFocus={() => {
+                      setBadPassword(false);
+                      setErrorMessage("");
+                    }}
+                    value={formPassword}
+                    autoComplete="current-password"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  error={badLastName}
-                  onFocus={() => {
-                    setBadLastName(false);
-                    setErrorMessage("");
-                  }}
-                  name="lastName"
-                  onChange={(e) => {
-                    setFormLastName(e.target.value);
-                  }}
-                  value={formLastName}
-                  autoComplete="lname"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  error={badEmail}
-                  onChange={(e) => {
-                    setFormEmail(e.target.value);
-                  }}
-                  onFocus={() => {
-                    setBadEmail(false);
-                    setErrorMessage("");
-                  }}
-                  value={formEmail}
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  error={badPassword}
-                  onChange={(e) => {
-                    setFormPassword(e.target.value);
-                  }}
-                  onFocus={() => {
-                    setBadPassword(false);
-                    setErrorMessage("");
-                  }}
-                  value={formPassword}
-                  autoComplete="current-password"
-                />
-              </Grid>
-            </Grid>
-            {errorMessage !== "" && (
-              <Typography
-                variant={"body1"}
-                align="center"
-                color="error"
-                style={{ marginTop: "24px" }}
+              {errorMessage !== "" && (
+                <Typography
+                  variant={"body1"}
+                  align="center"
+                  color="error"
+                  style={{ marginTop: "24px" }}
+                >
+                  {errorMessage}
+                </Typography>
+              )}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={(e) => registerHandler(e)}
+                className={classes.submit}
+                disabled={loading}
               >
-                {errorMessage}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={(e) => registerHandler(e)}
-              className={classes.submit}
-              disabled={loading}
-            >
-              Sign Up
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link to="/Login" variant="body2">
-                  {"Already have an account? Sign In"}
-                </Link>
+                Sign Up
+              </Button>
+              <Grid container justify="flex-end">
+                <Grid item>
+                  <Link to="/Login">
+                    <Typography variant="body2">
+                      Already have an account? Sign In
+                    </Typography>
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
-      </Container>
-    </>
+            </form>
+          </div>
+          <Box mt={5}>
+            <Copyright />
+          </Box>
+        </Container>
+      </Grow>
+    </div>
   );
 }

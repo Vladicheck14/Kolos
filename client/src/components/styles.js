@@ -9,6 +9,13 @@ export default makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
     padding: "5px",
+    position: "relative",
+  },
+  logout: {
+    borderRadius: "20px",
+    position: "absolute",
+    right: "5px",
+    top: "6px",
   },
   heading: {
     color: "rgba(0,183,255,1)",

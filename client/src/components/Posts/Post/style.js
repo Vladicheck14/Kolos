@@ -5,13 +5,13 @@ export default makeStyles((theme) => ({
   root: {
     width: "21em",
     minHeight: "28em",
-    justifyContent: "space-between",
     display: "flex",
     flexDirection: "column",
   },
   media: {
     height: "13em",
     width: "21em",
+    marginBottom: "1em",
   },
   expand: {
     transform: "rotate(0deg)",
