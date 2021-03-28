@@ -1,5 +1,4 @@
 import PostMessage from "../models/postMessage.js";
-import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 export const getPosts = async (req, res) => {
@@ -26,7 +25,6 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
-const getUserIdFromToken = (token) => jwt.verify(token, process.env.SECRET)._id;
 
 export const deletePost = async (req, res) => {
   const id = req.body.id;

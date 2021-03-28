@@ -6,10 +6,10 @@ import {
   Typography,
   FormControl,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import axios from "axios";
 import styles from "./styles";
-import loading from "../../images/loading.gif";
 import { GlobalContext } from "../../ContextProvider";
 
 const getBase64 = (file) => {
@@ -190,17 +190,15 @@ function Form() {
               onClick={(e) => handleFormSubmit(e)}
             >
               Post
+              {isLoading && (
+                <CircularProgress
+                  size="1.2em"
+                  color="secondary"
+                  style={{ marginLeft: "1em" }}
+                />
+              )}
             </Button>
           </Grid>
-          {isLoading && (
-            <Grid item container alignItems="center" justify="center">
-              <img
-                src={loading}
-                alt="loading"
-                style={{ height: "7em", width: "7em" }}
-              />
-            </Grid>
-          )}
         </FormControl>
       </Grid>
     </Grid>

@@ -49,6 +49,7 @@ export default function validateLoginRegisterData(data) {
       "SHORTFIRSTNAME"
     );
   }
+
   if (data.firstName.length > 15) {
     return result(
       false,
