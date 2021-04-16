@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { red } from "@material-ui/core/colors";
+import { blue } from "@material-ui/core/colors";
 
 export default makeStyles((theme) => ({
   root: {
@@ -25,6 +26,10 @@ export default makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: red[500],
+  },
+  avatarComment: {
+    backgroundColor: blue[500],
+    margin: "8px",
   },
   margin: {
     margin: theme.spacing(2),

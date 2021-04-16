@@ -13,6 +13,7 @@ import memories from "../images/memories.png";
 import useStyles from "./styles";
 import Form from "./Form";
 import axios from "axios";
+import FilterPanel from "./FilterPanel";
 import Posts from "./Posts";
 import { theme } from "../Theme";
 import loading from "../images/loading.gif";
@@ -30,6 +31,8 @@ function App() {
     lastName,
     email,
     userId,
+    isLoading,
+    getPostsData,
   } = useContext(GlobalContext);
   const [, setPostsValue] = posts;
   const [authTokenValue, setAuthTokenValue] = authToken;
@@ -38,26 +41,8 @@ function App() {
   const [, setLastNameValue] = lastName;
   const [, setEmailValue] = email;
   const [, setUserIdValue] = userId;
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getPosts = () => {
-      axios
-        .get("http://localhost:8000/posts/", {
-          headers: {
-            authToken: authTokenValue,
-          },
-        })
-        .then((response) => {
-          setIsLoading(false);
-          if (response.status === 200) {
-            setPostsValue(response.data);
-          } else {
-            console.log(response);
-          }
-        })
-        .catch((error) => console.log(error));
-    };
     const getUser = () => {
       axios
         .get("http://localhost:8000/api/getInfo", {
@@ -81,7 +66,7 @@ function App() {
         });
     };
     if (isLoggedInValue) {
-      getPosts();
+      getPostsData();
       getUser();
     } else {
       setEmailValue("");
@@ -130,6 +115,7 @@ function App() {
               Log out
             </Button>
           </AppBar>
+          <FilterPanel />
           <Grow in>
             <Container>
               <Grid

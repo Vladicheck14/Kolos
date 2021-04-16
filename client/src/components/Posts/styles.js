@@ -4,6 +4,7 @@ export default makeStyles((theme) => ({
   noposts: {
     fontWeight: "bold",
     color: "#989898",
+    textAlign: "center",
     fontSize: "5em",
     [theme.breakpoints.down("sm")]: {
       marginTop: "1em",

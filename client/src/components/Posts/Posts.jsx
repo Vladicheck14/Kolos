@@ -17,7 +17,9 @@ function Posts() {
         item
         container
         spacing={3}
-        justify={!matchesLg ? "center" : "flex-start"}
+        justify={
+          !matchesLg || postsValue.length === 0 ? "center" : "flex-start"
+        }
         alignItems="flex-start"
       >
         {postsValue.length > 0 &&
