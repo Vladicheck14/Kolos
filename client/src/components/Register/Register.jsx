@@ -51,14 +51,14 @@ export default function Register() {
   const registerHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const ip = await axios.get("https://ipinfo.io/json?token=da153d332a0738");
+    const ip = "1.1.1.1";
     axios
       .post("http://localhost:8000/api/register", {
         firstName: formFirstName,
         lastName: formLastName,
         email: formEmail,
         password: formPassword,
-        ipAddress: ip.data.ip,
+        ipAddress: ip,
       })
       .then((response) => {
         if (response.status === 200) {
